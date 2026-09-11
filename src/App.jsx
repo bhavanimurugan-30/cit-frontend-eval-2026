@@ -75,7 +75,10 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('sidebar_theme', isDarkMode ? 'dark' : 'light');
+      localStorage.setItem(
+        'sidebar_theme',
+        isDarkMode ? 'dark' : 'light'
+      );
     } catch (error) {
       console.error('Failed to save sidebar theme:', error);
     }
@@ -98,7 +101,9 @@ export default function App() {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(
           latlng.lat
-        )}&lon=${encodeURIComponent(latlng.lng)}&zoom=18&addressdetails=1`,
+        )}&lon=${encodeURIComponent(
+          latlng.lng
+        )}&zoom=18&addressdetails=1`,
         {
           method: 'GET',
           headers: { Accept: 'application/json' },
@@ -106,7 +111,9 @@ export default function App() {
       );
 
       if (!response.ok) {
-        throw new Error(`Reverse geocoding failed: ${response.status}`);
+        throw new Error(
+          `Reverse geocoding failed: ${response.status}`
+        );
       }
 
       const data = await response.json();
@@ -128,11 +135,16 @@ export default function App() {
         '';
 
       if (!placeName) {
-        placeName = `Location (${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)})`;
+        placeName = `Location (${latlng.lat.toFixed(
+          5
+        )}, ${latlng.lng.toFixed(5)})`;
       }
     } catch (error) {
       console.warn('Reverse geocoding failed:', error);
-      placeName = `Location (${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)})`;
+
+      placeName = `Location (${latlng.lat.toFixed(
+        5
+      )}, ${latlng.lng.toFixed(5)})`;
     } finally {
       setIsGeocoding(false);
     }
@@ -164,19 +176,15 @@ export default function App() {
 
   const updateExistingLocation = (locationData) => {
     const updatedName =
-      typeof locationData === 'string'
-        ? locationData.trim()
-        : locationData.name?.trim() || editingLocation.name || 'Unnamed Location';
+      locationData.name?.trim() ||
+      editingLocation.name ||
+      'Unnamed Location';
 
     const updatedCategory =
-      typeof locationData === 'object'
-        ? locationData.category || 'Other'
-        : editingLocation.category || 'Other';
+      locationData.category || 'Other';
 
     const updatedNotes =
-      typeof locationData === 'object'
-        ? locationData.notes || ''
-        : editingLocation.notes || '';
+      locationData.notes || '';
 
     setLocations((previousLocations) =>
       previousLocations.map((location) =>
@@ -195,23 +203,33 @@ export default function App() {
 
     setSelectedLocation((previousSelected) =>
       previousSelected?.id === editingLocation.id
-        ? { ...previousSelected, name: updatedName, category: updatedCategory, notes: updatedNotes }
+        ? {
+            ...previousSelected,
+            name: updatedName,
+            category: updatedCategory,
+            notes: updatedNotes,
+          }
         : previousSelected
     );
   };
 
   const addNewLocation = (locationData) => {
-    const enteredName =
-      typeof locationData === 'string' ? locationData.trim() : locationData.name?.trim();
+    const enteredName = locationData.name?.trim();
 
     const newLocation = {
-      id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      id: `${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2, 9)}`,
 
-      // User-entered name takes priority; reverse-geocoded name is the fallback.
-      name: enteredName || pendingCoords.placeName || 'Unnamed Location',
+      // User-entered name takes priority;
+      // reverse-geocoded name is the fallback.
+      name:
+        enteredName ||
+        pendingCoords.placeName ||
+        'Unnamed Location',
 
-      category: typeof locationData === 'object' ? locationData.category || 'Other' : 'Other',
-      notes: typeof locationData === 'object' ? locationData.notes || '' : '',
+      category: locationData.category || 'Other',
+      notes: locationData.notes || '',
 
       lat: pendingCoords.lat,
       lng: pendingCoords.lng,
@@ -220,7 +238,11 @@ export default function App() {
       createdAt: Date.now(),
     };
 
-    setLocations((previousLocations) => [...previousLocations, newLocation]);
+    setLocations((previousLocations) => [
+      ...previousLocations,
+      newLocation,
+    ]);
+
     setSelectedLocation(newLocation);
   };
 
@@ -249,7 +271,10 @@ export default function App() {
   const handleDeleteLocation = (id, event) => {
     event?.stopPropagation();
 
-    const locationToDelete = locations.find((location) => location.id === id);
+    const locationToDelete = locations.find(
+      (location) => location.id === id
+    );
+
     if (!locationToDelete) {
       return;
     }
@@ -257,7 +282,9 @@ export default function App() {
     setDeletedLocation(locationToDelete);
 
     setLocations((previousLocations) =>
-      previousLocations.filter((location) => location.id !== id)
+      previousLocations.filter(
+        (location) => location.id !== id
+      )
     );
 
     if (selectedLocation?.id === id) {
@@ -265,9 +292,12 @@ export default function App() {
       removeLocationFromUrl();
     }
 
-    // Auto-dismiss the undo toast after 5s unless a newer delete replaced it.
+    // Auto-dismiss the undo toast after 5s unless
+    // a newer delete replaced it.
     setTimeout(() => {
-      setDeletedLocation((current) => (current?.id === id ? null : current));
+      setDeletedLocation((current) =>
+        current?.id === id ? null : current
+      );
     }, 5000);
   };
 
@@ -281,7 +311,9 @@ export default function App() {
         (location) => location.id === deletedLocation.id
       );
 
-      return alreadyExists ? previousLocations : [...previousLocations, deletedLocation];
+      return alreadyExists
+        ? previousLocations
+        : [...previousLocations, deletedLocation];
     });
 
     setSelectedLocation(deletedLocation);
@@ -296,13 +328,21 @@ export default function App() {
   const handleToggleFavorite = (id) => {
     setLocations((previousLocations) =>
       previousLocations.map((location) =>
-        location.id === id ? { ...location, isFavorite: !location.isFavorite } : location
+        location.id === id
+          ? {
+              ...location,
+              isFavorite: !location.isFavorite,
+            }
+          : location
       )
     );
 
     setSelectedLocation((previousSelected) =>
       previousSelected?.id === id
-        ? { ...previousSelected, isFavorite: !previousSelected.isFavorite }
+        ? {
+            ...previousSelected,
+            isFavorite: !previousSelected.isFavorite,
+          }
         : previousSelected
     );
   };
@@ -313,13 +353,17 @@ export default function App() {
 
   const setLocationInUrl = (id) => {
     const url = new URL(window.location.href);
+
     url.searchParams.set('location', id);
+
     window.history.replaceState({}, '', url);
   };
 
   const removeLocationFromUrl = () => {
     const url = new URL(window.location.href);
+
     url.searchParams.delete('location');
+
     window.history.replaceState({}, '', url);
   };
 
@@ -332,16 +376,22 @@ export default function App() {
     }
   };
 
-  // Restore selection from a shared/reloaded URL once locations are loaded.
+  // Restore selection from a shared/reloaded URL
+  // once locations are loaded.
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
     const id = params.get('location');
 
     if (!id) {
       return;
     }
 
-    const location = locations.find((item) => String(item.id) === String(id));
+    const location = locations.find(
+      (item) => String(item.id) === String(id)
+    );
 
     if (location) {
       setSelectedLocation(location);
@@ -355,13 +405,21 @@ export default function App() {
   const handleMarkerDrag = (id, newCoordinates) => {
     setLocations((previousLocations) =>
       previousLocations.map((location) =>
-        location.id === id ? { ...location, ...newCoordinates } : location
+        location.id === id
+          ? {
+              ...location,
+              ...newCoordinates,
+            }
+          : location
       )
     );
 
     setSelectedLocation((previousSelected) =>
       previousSelected?.id === id
-        ? { ...previousSelected, ...newCoordinates }
+        ? {
+            ...previousSelected,
+            ...newCoordinates,
+          }
         : previousSelected
     );
   };
@@ -429,9 +487,21 @@ export default function App() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSave={handleSaveLocation}
-        initialName={editingLocation ? editingLocation.name : pendingCoords?.placeName || ''}
-        initialCategory={editingLocation ? editingLocation.category : 'Home'}
-        initialNotes={editingLocation ? editingLocation.notes : ''}
+        initialName={
+          editingLocation
+            ? editingLocation.name
+            : pendingCoords?.placeName || ''
+        }
+        initialCategory={
+          editingLocation
+            ? editingLocation.category
+            : 'Home'
+        }
+        initialNotes={
+          editingLocation
+            ? editingLocation.notes
+            : ''
+        }
         isEditing={Boolean(editingLocation)}
       />
 
@@ -442,7 +512,10 @@ export default function App() {
             <strong>{deletedLocation.name}</strong> deleted
           </span>
 
-          <button type="button" onClick={handleUndoDelete}>
+          <button
+            type="button"
+            onClick={handleUndoDelete}
+          >
             Undo
           </button>
 
