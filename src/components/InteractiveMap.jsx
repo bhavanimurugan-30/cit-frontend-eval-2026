@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   MapContainer,
@@ -211,6 +211,21 @@ export default function InteractiveMap({
   const tileLayerRef = useRef(null);
 
   useTileThemeSync(tileLayerRef, isDarkMode);
+
+  // Alt+1-9 shortcuts only work with a physical keyboard, so the hint
+  // in the popup is hidden on mobile-width screens where it isn't useful.
+  const [isMobile, setIsMobile] = useState(
+    () => window.innerWidth <= 768
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleMarkerSelect = (location) => {
 
@@ -657,7 +672,7 @@ export default function InteractiveMap({
 
                   {/* KEYBOARD */}
 
-                  {index < 9 && (
+                  {index < 9 && !isMobile && (
                     <div
                       style={{
                         marginTop: '8px',
