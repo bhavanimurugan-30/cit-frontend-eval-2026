@@ -64,12 +64,11 @@ object, since they change independently and for different reasons.
 
 ### Component structure
 
-```
-App.jsx                  – state, handlers, persistence, orchestration
-  ├─ Sidebar.jsx          – search, filter, sort, location list, theme toggle
-  ├─ InteractiveMap.jsx   – Leaflet map, markers, popups, map click/drag events
-  └─ AddLocationModal.jsx – add/edit form with validation
-```
+components/
+├── Sidebar.jsx          – Search, filter, sort, location list, theme toggle
+├── InteractiveMap.jsx   – Leaflet map, markers and map interactions
+├── LocationPopup.jsx    – Location details popup
+└── AddLocationModal.jsx – Add/edit location form with validation
 
 ### Data flow
 
