@@ -32,19 +32,20 @@ npm run lint
 - **Reverse geocoding:** OpenStreetMap Nominatim (`nominatim.openstreetmap.org`) — no API key.
 
 No `.env` file is needed to run the project.
+
 ## Core Features
 
---Interactive map with pan and zoom support.
---Add favorite locations by clicking on the map.
---Saved locations displayed as map markers and sidebar items.
---Select a location from the map or sidebar and focus the map on it.
---Edit saved location names with validation.
---Delete saved locations with selection-state handling.
---Search saved locations dynamically by name.
---Handle empty saved-location and no-search-results states.
---Persist saved locations using localStorage.
---Responsive design for desktop and smaller screens.
---Loading and error handling for location lookup.
+- Interactive map with pan and zoom support.
+- Add favorite locations by clicking on the map.
+- Saved locations displayed as map markers and sidebar items.
+- Select a location from the map or sidebar and focus the map on it.
+- Edit saved location names with validation.
+- Delete saved locations with selection-state handling.
+- Search saved locations dynamically by name.
+- Handle empty saved-location and no-search-results states.
+- Persist saved locations using `localStorage`.
+- Responsive design for desktop and smaller screens.
+- Loading and error handling for location lookup.
 
 ## Architecture Overview
 
@@ -55,9 +56,7 @@ which is the **single source of truth**. `Sidebar` and `InteractiveMap`
 are both purely presentational — they receive `locations` and
 `selectedLocation` as props and call handler callbacks (`onSelectLocation`,
 `onEditLocation`, `onDeleteLocation`, etc.) rather than owning their own
-copy of the data. This avoids the two most common bugs in this kind of
-app: the map and sidebar drifting out of sync, and stale marker/list data
-after an edit or delete.
+copy of the data.
 
 Selection state, the currently open modal, search query, and theme are
 kept as separate `useState` values in `App.jsx` rather than one large
@@ -79,7 +78,7 @@ App.jsx                  – state, handlers, persistence, orchestration
    then opens `AddLocationModal` pre-filled with that name.
 3. On save, `App.jsx` updates the single `locations` array.
 4. Since both `Sidebar` and `InteractiveMap` render from that same array,
-   the new marker and the new sidebar entry appear simultaneously 
+   the new marker and the new sidebar entry appear simultaneously.
 5. Selecting a location (from either the map or the sidebar) updates
    `selectedLocation`, which both components use to highlight the
    matching marker/list item and fly the map to it.
@@ -103,6 +102,5 @@ Beyond the core requirements, the following optional enhancements are implemente
 - **Undo delete** — a 5-second toast lets you restore a just-deleted location.
 - **Favorites** — locations can be starred/favorited.
 - **Dark/light theme** — toggles both the sidebar UI and the Leaflet map tiles.
-- **Keyboard accessibility** — Alt + 1–9 selects the corresponding location by index without touching the mouse. Covers the first 9 locations; beyond that, selection is via the sidebar.
+- **Keyboard accessibility** — `Alt + 1–9` selects the corresponding location by index without touching the mouse. Covers the first 9 locations; beyond that, selection is via the sidebar.
 - **URL-based selection** — selecting a location updates the URL's `?location=` query param, and reloading/opening that URL restores the selection and map focus.
-
