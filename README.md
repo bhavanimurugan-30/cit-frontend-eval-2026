@@ -90,6 +90,6 @@ Beyond the core requirements, the following optional enhancements are implemente
 - **Undo delete** — a 5-second toast lets you restore a just-deleted location.
 - **Favorites** — locations can be starred/favorited.
 - **Dark/light theme** — toggles both the sidebar UI and the Leaflet map tiles.
-- **Keyboard accessibility** — Keyboard shortcuts (Alt+1–9) only cover the first 9 locations; locations beyond that must be selected via the sidebar.
+- **Keyboard accessibility** — Alt + 1–9 selects the corresponding location by index without touching the mouse. Covers the first 9 locations; beyond that, selection is via the sidebar.
 - **URL-based selection** — selecting a location updates the URL's `?location=` query param, and reloading/opening that URL restores the selection and map focus.
 
