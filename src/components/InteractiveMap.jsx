@@ -17,6 +17,8 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
+import LocationPopup from './LocationPopup';
+
 
 /* =========================================================
    DEFAULT MARKER
@@ -90,20 +92,11 @@ function MapFocusHandler({ selectedLocation }) {
     const lat = Number(selectedLocation.lat);
     const lng = Number(selectedLocation.lng);
 
-    if (
-      Number.isNaN(lat) ||
-      Number.isNaN(lng)
-    ) {
+    if (Number.isNaN(lat) || Number.isNaN(lng)) {
       return;
     }
 
-    map.flyTo(
-      [lat, lng],
-      15,
-      {
-        duration: 1.2,
-      }
-    );
+    map.flyTo([lat, lng], 15, { duration: 1.2 });
   }, [selectedLocation, map]);
 
   return null;
@@ -114,10 +107,7 @@ function MapFocusHandler({ selectedLocation }) {
    KEYBOARD ACCESSIBILITY
 ========================================================= */
 
-function KeyboardMapHandler({
-  locations,
-  onSelectLocation,
-}) {
+function KeyboardMapHandler({ locations, onSelectLocation }) {
   useEffect(() => {
     const handleKeyDown = (event) => {
 
@@ -137,7 +127,6 @@ function KeyboardMapHandler({
       }
 
       const index = Number(event.key) - 1;
-
       const location = locations[index];
 
       if (!location) {
@@ -145,21 +134,11 @@ function KeyboardMapHandler({
       }
 
       event.preventDefault();
-
       onSelectLocation(location);
     };
 
-    window.addEventListener(
-      'keydown',
-      handleKeyDown
-    );
-
-    return () => {
-      window.removeEventListener(
-        'keydown',
-        handleKeyDown
-      );
-    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [locations, onSelectLocation]);
 
   return null;
@@ -228,7 +207,6 @@ export default function InteractiveMap({
   }, []);
 
   const handleMarkerSelect = (location) => {
-
     if (onSelectLocation) {
       onSelectLocation(location);
       return;
@@ -241,22 +219,13 @@ export default function InteractiveMap({
 
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-      }}
-    >
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
 
       <MapContainer
         center={[20.5937, 78.9629]}
         zoom={5}
         scrollWheelZoom={true}
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
+        style={{ width: '100%', height: '100%' }}
       >
 
         {/* =================================================
@@ -275,31 +244,20 @@ export default function InteractiveMap({
           ref={tileLayerRef}
           attribution="&copy; OpenStreetMap contributors"
           url={LIGHT_TILE_URL}
-          className={
-            isDarkMode
-              ? 'dark-map-tiles'
-              : ''
-          }
+          className={isDarkMode ? 'dark-map-tiles' : ''}
         />
-
 
         {/* =================================================
             MAP CLICK HANDLER
         ================================================= */}
 
-        <MapClickHandler
-          onMapClick={onMapClick}
-        />
-
+        <MapClickHandler onMapClick={onMapClick} />
 
         {/* =================================================
             SELECTED LOCATION FOCUS
         ================================================= */}
 
-        <MapFocusHandler
-          selectedLocation={selectedLocation}
-        />
-
+        <MapFocusHandler selectedLocation={selectedLocation} />
 
         {/* =================================================
             KEYBOARD ACCESSIBILITY
@@ -310,44 +268,27 @@ export default function InteractiveMap({
           onSelectLocation={handleMarkerSelect}
         />
 
-
         {/* =================================================
             MARKERS
         ================================================= */}
 
         {locations.map((location, index) => {
 
-          const isSelected =
-            selectedLocation?.id === location.id;
+          const isSelected = selectedLocation?.id === location.id;
 
           const lat = Number(location.lat);
           const lng = Number(location.lng);
 
-          if (
-            Number.isNaN(lat) ||
-            Number.isNaN(lng)
-          ) {
+          if (Number.isNaN(lat) || Number.isNaN(lng)) {
             return null;
           }
-
 
           return (
             <Marker
               key={location.id}
-
-              position={[
-                lat,
-                lng,
-              ]}
-
-              icon={
-                isSelected
-                  ? selectedIcon
-                  : defaultIcon
-              }
-
+              position={[lat, lng]}
+              icon={isSelected ? selectedIcon : defaultIcon}
               draggable={true}
-
               eventHandlers={{
 
                 /* ===============================
@@ -358,32 +299,23 @@ export default function InteractiveMap({
                   handleMarkerSelect(location);
                 },
 
-
                 /* ===============================
                    DRAG
                 =============================== */
 
                 dragend: (event) => {
-
-                  const marker =
-                    event.target;
-
-                  const position =
-                    marker.getLatLng();
+                  const marker = event.target;
+                  const position = marker.getLatLng();
 
                   if (onMarkerDrag) {
-                    onMarkerDrag(
-                      location.id,
-                      {
-                        lat: position.lat,
-                        lng: position.lng,
-                      }
-                    );
+                    onMarkerDrag(location.id, {
+                      lat: position.lat,
+                      lng: position.lng,
+                    });
                   }
                 },
 
               }}
-
             >
 
               {/* =================================================
@@ -391,317 +323,14 @@ export default function InteractiveMap({
               ================================================= */}
 
               <Popup>
-
-                <div
-                  style={{
-                    minWidth: '230px',
-                    fontFamily:
-                      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-                  }}
-                >
-
-                  {/* NAME */}
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent:
-                        'space-between',
-                      alignItems: 'center',
-                      marginBottom: '8px',
-                    }}
-                  >
-
-                    <strong
-                      style={{
-                        fontSize: '16px',
-                        color:
-                          '#1e293b',
-                      }}
-                    >
-                      {location.name ||
-                        'Unnamed Location'}
-                    </strong>
-
-
-                    {location.isFavorite && (
-                      <span
-                        style={{
-                          fontSize: '18px',
-                        }}
-                        title="Favorite"
-                      >
-                        ⭐
-                      </span>
-                    )}
-
-                  </div>
-
-
-                  {/* CATEGORY */}
-
-                  <div
-                    style={{
-                      display: 'inline-block',
-                      padding: '4px 8px',
-                      borderRadius: '999px',
-
-                      backgroundColor:
-                        location.category ===
-                        'Home'
-                          ? '#dcfce7'
-                          : location.category ===
-                            'Work'
-                          ? '#dbeafe'
-                          : '#f1f5f9',
-
-                      color:
-                        location.category ===
-                        'Home'
-                          ? '#166534'
-                          : location.category ===
-                            'Work'
-                          ? '#1d4ed8'
-                          : '#475569',
-
-                      fontSize: '11px',
-                      fontWeight: '600',
-                      marginBottom: '10px',
-                    }}
-                  >
-                    {location.category ||
-                      'Other'}
-                  </div>
-
-
-                  {/* NOTES */}
-
-                  {location.notes && (
-                    <div
-                      style={{
-                        borderTop:
-                          '1px solid #e2e8f0',
-
-                        paddingTop: '8px',
-                        marginBottom: '8px',
-
-                        color: '#475569',
-                        fontSize: '12px',
-                      }}
-                    >
-                      <strong>
-                        Notes:
-                      </strong>{' '}
-                      {location.notes}
-                    </div>
-                  )}
-
-
-                  {/* DETAILS */}
-
-                  <div
-                    style={{
-                      borderTop:
-                        '1px solid #e2e8f0',
-                      paddingTop: '8px',
-                    }}
-                  >
-
-                    {/* ID */}
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent:
-                          'space-between',
-                        marginBottom: '5px',
-                      }}
-                    >
-
-                      <span
-                        style={{
-                          color: '#64748b',
-                          fontSize: '11px',
-                          fontWeight: '600',
-                        }}
-                      >
-                        ID
-                      </span>
-
-                      <span
-                        style={{
-                          color: '#334155',
-                          fontSize: '10px',
-                          fontFamily:
-                            'monospace',
-                          marginLeft: '10px',
-                        }}
-                      >
-                        {location.id}
-                      </span>
-
-                    </div>
-
-
-                    {/* LATITUDE */}
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent:
-                          'space-between',
-                        marginBottom: '5px',
-                      }}
-                    >
-
-                      <span
-                        style={{
-                          color: '#64748b',
-                          fontSize: '11px',
-                          fontWeight: '600',
-                        }}
-                      >
-                        Latitude
-                      </span>
-
-                      <span
-                        style={{
-                          color: '#334155',
-                          fontSize: '11px',
-                          fontFamily:
-                            'monospace',
-                        }}
-                      >
-                        {lat.toFixed(6)}
-                      </span>
-
-                    </div>
-
-
-                    {/* LONGITUDE */}
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent:
-                          'space-between',
-                        marginBottom: '5px',
-                      }}
-                    >
-
-                      <span
-                        style={{
-                          color: '#64748b',
-                          fontSize: '11px',
-                          fontWeight: '600',
-                        }}
-                      >
-                        Longitude
-                      </span>
-
-                      <span
-                        style={{
-                          color: '#334155',
-                          fontSize: '11px',
-                          fontFamily:
-                            'monospace',
-                        }}
-                      >
-                        {lng.toFixed(6)}
-                      </span>
-
-                    </div>
-
-
-                    {/* CREATED */}
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent:
-                          'space-between',
-                      }}
-                    >
-
-                      <span
-                        style={{
-                          color: '#64748b',
-                          fontSize: '11px',
-                          fontWeight: '600',
-                        }}
-                      >
-                        Created
-                      </span>
-
-                      <span
-                        style={{
-                          color: '#334155',
-                          fontSize: '11px',
-                        }}
-                      >
-                        {location.createdAt
-                          ? new Date(
-                              location.createdAt
-                            ).toLocaleDateString()
-                          : '—'}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-
-                  {/* SELECTED */}
-
-                  {isSelected && (
-                    <div
-                      style={{
-                        marginTop: '10px',
-                        paddingTop: '8px',
-                        borderTop:
-                          '1px solid #e2e8f0',
-                        color: '#dc2626',
-                        fontSize: '11px',
-                        fontWeight: '700',
-                      }}
-                    >
-                      ● Currently Selected
-                    </div>
-                  )}
-
-
-                  {/* KEYBOARD */}
-
-                  {index < 9 && !isMobile && (
-                    <div
-                      style={{
-                        marginTop: '8px',
-                        color: '#94a3b8',
-                        fontSize: '10px',
-                      }}
-                    >
-                      ⌨️ Alt + {index + 1}
-                      {' '}
-                      to select
-                    </div>
-                  )}
-
-
-                  {/* DRAG */}
-
-                  <div
-                    style={{
-                      marginTop: '6px',
-                      color: '#94a3b8',
-                      fontSize: '10px',
-                    }}
-                  >
-                    💡 Drag marker to update
-                    coordinates
-                  </div>
-
-                </div>
-
+                <LocationPopup
+                  location={location}
+                  isSelected={isSelected}
+                  lat={lat}
+                  lng={lng}
+                  index={index}
+                  isMobile={isMobile}
+                />
               </Popup>
 
             </Marker>
