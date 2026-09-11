@@ -64,11 +64,13 @@ object, since they change independently and for different reasons.
 
 ### Component structure
 
-` ``￼App.jsx                  – state, handlers, persistence, orchestration￼  
-├─ Sidebar.jsx          – search, filter, sort, location list, theme toggle￼ 
-├─ InteractiveMap.jsx   – Leaflet map, markers, popups, map click/drag events￼ 
-└─ AddLocationModal.jsx – add/edit form with validation￼
-└─LocationPopup.jsx -Location details popup`` `
+```
+App.jsx                  – state, handlers, persistence, orchestration
+  ├─ Sidebar.jsx          – search, filter, sort, location list, theme toggle
+  ├─ InteractiveMap.jsx   – Leaflet map, markers, popups, map click/drag events
+  └─ AddLocationModal.jsx – add/edit form with validation
+  └─ LocationPopup.jsx -Displays location details inside the map marker popup
+``` 
 
 ### Data flow
 
@@ -114,3 +116,9 @@ Beyond the core requirements, the following optional enhancements are implemente
 **Mobile View**
 
 <img src="./output/mobile-view.jpeg" width="300" alt="Mobile view with location popup" />
+
+
+
+
+
+
