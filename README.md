@@ -3,6 +3,8 @@
 An interactive map application for saving, organizing, and managing favorite
 locations. Built with React, Vite, and React-Leaflet (OpenStreetMap tiles).
 
+**Live Demo:** [https://cit-frontend-eval-2026.vercel.app/](https://cit-frontend-eval-2026.vercel.app/)
+
 ## Setup & Run Instructions
 
 **Requirements:** Node.js 18+ and npm.
@@ -116,9 +118,3 @@ Beyond the core requirements, the following optional enhancements are implemente
 **Mobile View**
 
 <img src="./output/mobile-view.jpeg" width="300" alt="Mobile view with location popup" />
-
-
-
-
-
-
