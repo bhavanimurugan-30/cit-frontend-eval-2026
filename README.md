@@ -104,3 +104,14 @@ Beyond the core requirements, the following optional enhancements are implemente
 - **Dark/light theme** — toggles both the sidebar UI and the Leaflet map tiles.
 - **Keyboard accessibility** — `Alt + 1–9` selects the corresponding location by index without touching the mouse. Covers the first 9 locations; beyond that, selection is via the sidebar.
 - **URL-based selection** — selecting a location updates the URL's `?location=` query param, and reloading/opening that URL restores the selection and map focus.
+
+
+## Screenshots
+
+| Light Mode | Dark Mode |
+|---|---|
+| ![Light mode](./output/light-mode.png) | ![Dark mode](./output/dark-mode.png) |
+
+**Mobile View**
+
+<img src="./output/mobile-view.jpeg" width="300" alt="Mobile view with location popup" />
