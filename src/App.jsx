@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import InteractiveMap from './components/InteractiveMap';
 import Sidebar from './components/Sidebar';
@@ -30,7 +30,35 @@ export default function App() {
   // SELECTION + MODAL STATE
   // =========================================================
 
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(() => {
+    try {
+      const id = new URLSearchParams(window.location.search).get('location');
+
+      if (!id) {
+        return null;
+      }
+
+      const saved = localStorage.getItem('app_locations');
+
+      if (!saved) {
+        return null;
+      }
+
+      const parsed = JSON.parse(saved);
+
+      if (!Array.isArray(parsed)) {
+        return null;
+      }
+
+      return (
+        parsed.find((item) => String(item.id) === String(id)) ||
+        null
+      );
+    } catch (error) {
+      console.error('Failed to restore selected location:', error);
+      return null;
+    }
+  });
   const [pendingCoords, setPendingCoords] = useState(null);
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,7 +80,7 @@ export default function App() {
     try {
       const savedTheme = localStorage.getItem('sidebar_theme');
       return savedTheme === 'dark';
-    } catch (error) {
+    } catch {
       return false;
     }
   });
@@ -95,7 +123,7 @@ export default function App() {
     setIsModalOpen(false);
     setEditingLocation(null);
 
-    let placeName = '';
+    let placeName;
 
     try {
       const response = await fetch(
@@ -376,28 +404,6 @@ export default function App() {
     }
   };
 
-  // Restore selection from a shared/reloaded URL
-  // once locations are loaded.
-  useEffect(() => {
-    const params = new URLSearchParams(
-      window.location.search
-    );
-
-    const id = params.get('location');
-
-    if (!id) {
-      return;
-    }
-
-    const location = locations.find(
-      (item) => String(item.id) === String(id)
-    );
-
-    if (location) {
-      setSelectedLocation(location);
-    }
-  }, [locations]);
-
   // =========================================================
   // MARKER DRAG (updates coordinates)
   // =========================================================
@@ -484,6 +490,13 @@ export default function App() {
 
       {/* ADD / EDIT MODAL */}
       <AddLocationModal
+        key={
+          editingLocation
+            ? `edit-${editingLocation.id}`
+            : pendingCoords
+              ? `add-${pendingCoords.lat}-${pendingCoords.lng}`
+              : 'closed'
+        }
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSave={handleSaveLocation}

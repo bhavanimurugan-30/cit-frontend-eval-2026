@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export default function AddLocationModal({
   isOpen,
@@ -10,19 +9,10 @@ export default function AddLocationModal({
   initialNotes = '',
   isEditing = false,
 }) {
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('Home');
-  const [notes, setNotes] = useState('');
+  const [name, setName] = useState(initialName || '');
+  const [category, setCategory] = useState(initialCategory || 'Home');
+  const [notes, setNotes] = useState(initialNotes || '');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (isOpen) {
-      setName(initialName || '');
-      setCategory(initialCategory || 'Home');
-      setNotes(initialNotes || '');
-      setError('');
-    }
-  }, [isOpen, initialName, initialCategory, initialNotes]);
 
   if (!isOpen) return null;
 
@@ -81,7 +71,6 @@ export default function AddLocationModal({
           border: '1px solid #e2e8f0',
         }}
       >
-        {/* Header */}
         <div
           style={{
             padding: '22px 24px 18px',
@@ -148,11 +137,8 @@ export default function AddLocationModal({
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit}>
           <div style={{ padding: '22px 24px' }}>
-
-            {/* Location Name */}
             <div style={{ marginBottom: '18px' }}>
               <label
                 style={{
@@ -203,7 +189,6 @@ export default function AddLocationModal({
               )}
             </div>
 
-            {/* Category */}
             <div style={{ marginBottom: '18px' }}>
               <label
                 style={{
@@ -240,7 +225,6 @@ export default function AddLocationModal({
               </select>
             </div>
 
-            {/* Notes */}
             <div>
               <label
                 style={{
@@ -276,7 +260,6 @@ export default function AddLocationModal({
             </div>
           </div>
 
-          {/* Footer */}
           <div
             style={{
               padding: '15px 24px',
