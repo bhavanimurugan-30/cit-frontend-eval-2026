@@ -32,6 +32,19 @@ npm run lint
 - **Reverse geocoding:** OpenStreetMap Nominatim (`nominatim.openstreetmap.org`) — no API key.
 
 No `.env` file is needed to run the project.
+## Core Features
+
+--Interactive map with pan and zoom support.
+--Add favorite locations by clicking on the map.
+--Saved locations displayed as map markers and sidebar items.
+--Select a location from the map or sidebar and focus the map on it.
+--Edit saved location names with validation.
+--Delete saved locations with selection-state handling.
+--Search saved locations dynamically by name.
+--Handle empty saved-location and no-search-results states.
+--Persist saved locations using localStorage.
+--Responsive design for desktop and smaller screens.
+--Loading and error handling for location lookup.
 
 ## Architecture Overview
 
