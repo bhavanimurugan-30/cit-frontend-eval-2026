@@ -1,4 +1,4 @@
-# Location Manager
+#(MapMarks) Location Manager
 
 An interactive map application for saving, organizing, and managing favorite
 locations. Built with React, Vite, and React-Leaflet (OpenStreetMap tiles).
